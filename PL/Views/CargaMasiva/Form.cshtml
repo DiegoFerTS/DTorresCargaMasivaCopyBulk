@@ -1,0 +1,85 @@
+﻿
+@{
+    ViewBag.Title = "Form";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2 class="text-center">Carga masiva con BulkCopy</h2>
+
+<br />
+<br />
+
+
+@if (ViewBag.Informacion != null)
+{
+
+
+    if (ViewBag.Informacion == "La carga masiva se realizo con exito.")
+    {
+        <div class="alert alert-success">
+            @ViewBag.Informacion
+        </div>
+
+        <br />
+    }
+    else
+    {
+        <div class="alert alert-danger">
+            @ViewBag.Informacion
+        </div>
+        <br />
+    }
+
+}
+
+
+
+<center style="margin-bottom: 350px;">
+    <button id="button__start" class="btn btn-primary">Comenzar carga masiva</button>
+    <br />
+    <br />
+    @using (Html.BeginForm("CargaMasiva", "CargaMasiva", FormMethod.Post, new { @enctype = "multipart/form-data" }))
+    {
+        <div id="container__file" style="display: none;">
+            <label>Ingresa un archivo con extension .csv</label>
+            <br />
+            <input id="archivo" name="archivo" type="file" class="form-control" onchange="ValidarArchivo()" />
+            <br />
+            <button type="submit" class="btn btn-success">Subir</button>
+        </div>
+    }
+</center>
+
+<br />
+<br />
+
+
+@Scripts.Render("~/bundles/jquery")
+
+<script>
+    $("#button__start").click(function () {
+        $("#container__file").toggle("slow", function () {
+
+        });
+    });
+
+    function ValidarArchivo() {
+        var extencionesPermitidas = ["csv"];
+
+        var file = document.getElementById("archivo");
+
+        var extencionArchivo = file.value.split(".").pop().toLowerCase();
+        var archivoValido = false;
+        for (var index in extencionesPermitidas) {
+            if (extencionArchivo === extencionesPermitidas[index]) {
+                archivoValido = true;
+                break;
+            }
+        }
+        if (!archivoValido) {
+            alert("Las extenciones validas de archivo son: *." + extencionesPermitidas.join(", *.") + ".");
+            $("#archivo").val("");
+        }
+        return archivoValido;
+    }
+</script>
